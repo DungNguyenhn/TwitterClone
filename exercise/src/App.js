@@ -1,218 +1,221 @@
 import './App.css';
-import React, { useState, useEffect , useRef } from 'react'
-import ReactDOM from 'react-dom'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faUser,/*faRetweet*/} from '@fortawesome/free-solid-svg-icons'
-import {faEdit, faTrashAlt /*, faComment, faHeart */} from '@fortawesome/free-regular-svg-icons'
+import React, { useState, /* useEffect , useRef */} from 'react'
+// import ReactDOM from 'react-dom'
 
-function TextAreaSingle({handleChange,placeholder,value}){
-  return(
-    <textarea 
-      onChange={handleChange} 
-      className='textarea-post' 
-      placeholder={placeholder}
-      value={value}
-    >
-    </textarea>
-  );
-}
-function TextAreaInputPost(props){
-  const {placeholder,handleChange,lengthInput,value}=props;
-  const lengthInputData=250-lengthInput;
-  return(
-    <div className='textarea-wrap'>
-      <TextAreaSingle
-        handleChange={handleChange}
-        placeholder={placeholder}
-        value={value} 
-      />
-      <span className='count-number-text'>{lengthInputData}</span>
-    </div>
-  )
-}
-function Button({value,classname,disable,handleClick,type}){
-  return(
-    <div className='btn-wrap'>
-      <button type={type} onClick={handleClick} className={classname} disabled={disable}>{value} </button>
-    </div>
-  )
-}
-function AddPostBlock({handleClick}){
-  const [blockAddPost,setInputdata]=useState(
-    {
-      disableBtn:true,
-      inputData:'',
-    }
-  )
-  let inputDataLength = 0;
-  const handleChangeInput=(e)=>{
-    if((e.target.value)!==''){
-      setInputdata({
-        disableBtn:false,
-        inputData:e.target.value,
-      });
-    }else{
-      setInputdata({
-        disableBtn:true,
-        inputData:'',
-      });
-    }
-  }
-  const resetForm = (e)=>{
-    setInputdata({
-      disableBtn:true,
-      inputData:'',
-    })
-  }
+import AddPostBlock from './components/AddPostBlock/AddPostBlock'
+import UserPostBlock from './components/UserPostBlock/UserPostBlock';
+// import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+// import {faUser,/*faRetweet*/} from '@fortawesome/free-solid-svg-icons'
+// import {faEdit, faTrashAlt /*, faComment, faHeart */} from '@fortawesome/free-regular-svg-icons'
+
+// function TextAreaSingle({handleChange,placeholder,value}){
+//   return(
+//     <textarea 
+//       onChange={handleChange} 
+//       className='textarea-post' 
+//       placeholder={placeholder}
+//       value={value}
+//     >
+//     </textarea>
+//   );
+// }
+// function TextAreaInputPost(props){
+//   const {placeholder,handleChange,lengthInput,value}=props;
+//   const lengthInputData=250-lengthInput;
+//   return(
+//     <div className='textarea-wrap'>
+//       <TextAreaSingle
+//         handleChange={handleChange}
+//         placeholder={placeholder}
+//         value={value} 
+//       />
+//       <span className='count-number-text'>{lengthInputData}</span>
+//     </div>
+//   )
+// }
+// function Button({value,classname,disable,handleClick,type}){
+//   return(
+//     <div className='btn-wrap'>
+//       <button type={type} onClick={handleClick} className={classname} disabled={disable}>{value} </button>
+//     </div>
+//   )
+// }
+// function AddPostBlock({handleClick}){
+//   const [blockAddPost,setInputdata]=useState(
+//     {
+//       disableBtn:true,
+//       inputData:'',
+//     }
+//   )
+//   let inputDataLength = 0;
+//   const handleChangeInput=(e)=>{
+//     if((e.target.value)!==''){
+//       setInputdata({
+//         disableBtn:false,
+//         inputData:e.target.value,
+//       });
+//     }else{
+//       setInputdata({
+//         disableBtn:true,
+//         inputData:'',
+//       });
+//     }
+//   }
+//   const resetForm = (e)=>{
+//     setInputdata({
+//       disableBtn:true,
+//       inputData:'',
+//     })
+//   }
   
-  const checkLengthPost = (e)=>{
-    if(e.target.value.length>250){
-      setInputdata({
-        disableBtn: true,
-        inputData: e.target.value,
-      })
-    }
-  }
-  if(blockAddPost.inputData!==undefined){
-    inputDataLength=blockAddPost.inputData.length;
-  }
-  return(
-      <div className='post-block'>
-        <form onSubmit={(e)=>{handleClick(e,blockAddPost.inputData);resetForm()}}>
-          <TextAreaInputPost 
-            lengthInput={inputDataLength}
-            handleChange={(e)=>{handleChangeInput(e);checkLengthPost(e)}} 
-            placeholder='Tweet about 30 Days Of React...'
-            value={blockAddPost.inputData}
-          />
-          <Button 
-            disable={blockAddPost.disableBtn} 
-            value='Add Post' 
-            classname={`${blockAddPost.disableBtn ? 'btn btn-disabled btn-add-post' : 'btn btn-active btn-add-post'}`}
-            type='submit'
-          />
-        </form>
-      </div>
-  );
-}
-function NameAndImgUser({username,tagname}){
-  return(
-    <div className='top-user-block'>
-      <div className='img-user-wrap'>
-        <div className='img-circle-wrap'>
-          <FontAwesomeIcon icon={faUser}/>
-        </div>
-      </div>
-      <div className='user-name-wrap'>
-        <span>{username}</span>
-        <span>{tagname}</span>
-      </div>
-    </div>
-  );
-}
-function ContentPostBlock({post}){
-  return(
-    <div className='content-text-wrap'>
-      <p className='content-text'>
-        {post}
-      </p>
-    </div>
-  );
-}
-function DetailPost({dayPost,handleDelete,handleEdit,index}){
-  return(
-    <div className='post-detail-wrap'>
-      <div className='post-icon-left'>
-        <FontAwesomeIcon icon={faEdit} onClick={()=>handleEdit(index)} />
-        <FontAwesomeIcon icon={faTrashAlt} onClick={()=>handleDelete(index)}/>
-      </div>
-      {/* <div className='post-icon-center'>
-        <FontAwesomeIcon icon={faComment} />
-        <FontAwesomeIcon icon={faHeart} />
-        <FontAwesomeIcon icon={faRetweet} />
-      </div> */}
-      <div className='date-posted'>
-        {dayPost}
-      </div>
-    </div>
-  )
-}
-function UserSingleBlock({username,tagname,post,dayPost,handleDelete,handleEdit,i}){
-  const [editPost,setEditPost]=useState(false);
-  const [editText,setEditText]=useState(post);
-  const updatePost=()=>{
-    setEditPost(true);
-  }
-  const cancelUpdatePost=(e)=>{
-    setEditText(post);
-    setEditPost(false);
-  }
-  const submitUpdatePost=(e)=>{
-    setEditText(editText);
-    setEditPost(false);
-  }
-  const handleChangeInputEdit=(e)=>{
-    setEditText(e.target.value)
-  }
-  const editTextRemoveBlankSpace=(editText.replace(/\s\s\s+/g,''))
-  if(editPost===false)
-  {
-    return(
-      <div>
-        <NameAndImgUser username={username} tagname={tagname} />
-        <ContentPostBlock post={post} />
-        <DetailPost dayPost={dayPost} handleDelete={handleDelete} handleEdit={updatePost} index={i}/>
-      </div>
-    );
-  }
-  else
-  {
-    return(
-      <form /*onSubmit={()=>cancelUpdatePost()} */>
-        <TextAreaSingle value={editTextRemoveBlankSpace} handleChange={handleChangeInputEdit}  />
-        <div className='btn-edit-wrap '>
-          <Button 
-            value='Save' 
-            classname='btn btn-small save-btn' 
-            handleClick={
-              (e)=>{handleEdit(i,e,editTextRemoveBlankSpace);submitUpdatePost()}
-            }
-            type='submit'
-          />
-          <Button 
-            value='Cancel' 
-            classname='btn btn-small cancel-btn' 
-            handleClick={cancelUpdatePost} 
-            type='button'
-          />
-        </div>
-      </form>
-    );
-  }
-}
-function UserPostBlock({data,handleDelete,handleEdit}){
-  const postList=data.map((postList,i)=>{
-    const {username,tagname,post,dayPost}=postList;
-    return(
-      <div key={`${username} + ${i}`} className='user-post-block'>
-        <UserSingleBlock 
-          username={username}
-          tagname={tagname}
-          post={post}
-          dayPost={dayPost}
-          handleDelete={handleDelete}
-          i={i}
-          handleEdit={handleEdit}
-        />
-      </div>
-    );
-  })
-  return(
-    <div>
-      {postList}
-    </div>
-  )
-}
+//   const checkLengthPost = (e)=>{
+//     if(e.target.value.length>250){
+//       setInputdata({
+//         disableBtn: true,
+//         inputData: e.target.value,
+//       })
+//     }
+//   }
+//   if(blockAddPost.inputData!==undefined){
+//     inputDataLength=blockAddPost.inputData.length;
+//   }
+//   return(
+//       <div className='post-block'>
+//         <form onSubmit={(e)=>{handleClick(e,blockAddPost.inputData);resetForm()}}>
+//           <TextAreaInputPost 
+//             lengthInput={inputDataLength}
+//             handleChange={(e)=>{handleChangeInput(e);checkLengthPost(e)}} 
+//             placeholder='Tweet about 30 Days Of React...'
+//             value={blockAddPost.inputData}
+//           />
+//           <Button 
+//             disable={blockAddPost.disableBtn} 
+//             value='Add Post' 
+//             classname={`${blockAddPost.disableBtn ? 'btn btn-disabled btn-add-post' : 'btn btn-active btn-add-post'}`}
+//             type='submit'
+//           />
+//         </form>
+//       </div>
+//   );
+// }
+// function NameAndImgUser({username,tagname}){
+//   return(
+//     <div className='top-user-block'>
+//       <div className='img-user-wrap'>
+//         <div className='img-circle-wrap'>
+//           <FontAwesomeIcon icon={faUser}/>
+//         </div>
+//       </div>
+//       <div className='user-name-wrap'>
+//         <span>{username}</span>
+//         <span>{tagname}</span>
+//       </div>
+//     </div>
+//   );
+// }
+// function ContentPostBlock({post}){
+//   return(
+//     <div className='content-text-wrap'>
+//       <p className='content-text'>
+//         {post}
+//       </p>
+//     </div>
+//   );
+// }
+// function DetailPost({dayPost,handleDelete,handleEdit,index}){
+//   return(
+//     <div className='post-detail-wrap'>
+//       <div className='post-icon-left'>
+//         <FontAwesomeIcon icon={faEdit} onClick={()=>handleEdit(index)} />
+//         <FontAwesomeIcon icon={faTrashAlt} onClick={()=>handleDelete(index)}/>
+//       </div>
+//       {/* <div className='post-icon-center'>
+//         <FontAwesomeIcon icon={faComment} />
+//         <FontAwesomeIcon icon={faHeart} />
+//         <FontAwesomeIcon icon={faRetweet} />
+//       </div> */}
+//       <div className='date-posted'>
+//         {dayPost}
+//       </div>
+//     </div>
+//   )
+// }
+// function UserSingleBlock({username,tagname,post,dayPost,handleDelete,handleEdit,i}){
+//   const [editPost,setEditPost]=useState(false);
+//   const [editText,setEditText]=useState(post);
+//   const updatePost=()=>{
+//     setEditPost(true);
+//   }
+//   const cancelUpdatePost=(e)=>{
+//     setEditText(post);
+//     setEditPost(false);
+//   }
+//   const submitUpdatePost=(e)=>{
+//     setEditText(editText);
+//     setEditPost(false);
+//   }
+//   const handleChangeInputEdit=(e)=>{
+//     setEditText(e.target.value)
+//   }
+//   const editTextRemoveBlankSpace=(editText.replace(/\s\s\s+/g,''))
+//   if(editPost===false)
+//   {
+//     return(
+//       <div>
+//         <NameAndImgUser username={username} tagname={tagname} />
+//         <ContentPostBlock post={post} />
+//         <DetailPost dayPost={dayPost} handleDelete={handleDelete} handleEdit={updatePost} index={i}/>
+//       </div>
+//     );
+//   }
+//   else
+//   {
+//     return(
+//       <form /*onSubmit={()=>cancelUpdatePost()} */>
+//         <TextAreaSingle value={editTextRemoveBlankSpace} handleChange={handleChangeInputEdit}  />
+//         <div className='btn-edit-wrap '>
+//           <Button 
+//             value='Save' 
+//             classname='btn btn-small save-btn' 
+//             handleClick={
+//               (e)=>{handleEdit(i,e,editTextRemoveBlankSpace);submitUpdatePost()}
+//             }
+//             type='submit'
+//           />
+//           <Button 
+//             value='Cancel' 
+//             classname='btn btn-small cancel-btn' 
+//             handleClick={cancelUpdatePost} 
+//             type='button'
+//           />
+//         </div>
+//       </form>
+//     );
+//   }
+// }
+// function UserPostBlock({data,handleDelete,handleEdit}){
+//   const postList=data.map((postList,i)=>{
+//     const {username,tagname,post,dayPost}=postList;
+//     return(
+//       <div key={`${username} + ${i}`} className='user-post-block'>
+//         <UserSingleBlock 
+//           username={username}
+//           tagname={tagname}
+//           post={post}
+//           dayPost={dayPost}
+//           handleDelete={handleDelete}
+//           i={i}
+//           handleEdit={handleEdit}
+//         />
+//       </div>
+//     );
+//   })
+//   return(
+//     <div>
+//       {postList}
+//     </div>
+//   )
+// }
 function App() {
   const setDayPost=()=>{
     let options = {year: 'numeric', month: 'short', day: 'numeric',hour:'2-digit',minute:'2-digit'};
@@ -283,18 +286,17 @@ function App() {
     postCopy.splice(i,1);
     setPost(postCopy);
   }
-  const saveEdit=(i,e,data)=>{
+  const handleSubmitEdit=(i,e,data)=>{
     e.preventDefault();
     let copyPost=[...post];
     copyPost[i].post = data;
     setPost(copyPost);
   }
-  console.log('render lai nay')
   return (
     <div className="App">
       <div className='main-wrap'>
-        <AddPostBlock  handleClick={submitForm}/>
-        <UserPostBlock data={post} handleDelete={deletePost}  handleEdit={saveEdit}/>
+        <AddPostBlock handleClick={submitForm}/>
+        <UserPostBlock data={post} handleDelete={deletePost} handleSubmit={handleSubmitEdit}/>
       </div>
     </div>
   );
